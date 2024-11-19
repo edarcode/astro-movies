@@ -4,6 +4,26 @@ import { db, eq, Movies } from "astro:db";
 
 export const prerender = false;
 
+export const GET: APIRoute = async ({ params }) => {
+  try {
+    const movieId = params.id as string;
+
+    const [result] = await db
+      .select()
+      .from(Movies)
+      .where(eq(Movies.id, movieId));
+
+    if (!result) return Res.notFound();
+
+    return Res.json({
+      status: 200,
+      data: result,
+    });
+  } catch (error) {
+    return Res.err();
+  }
+};
+
 export const PATCH: APIRoute = async ({ params, request }) => {
   try {
     const movieId = params.id as string;
